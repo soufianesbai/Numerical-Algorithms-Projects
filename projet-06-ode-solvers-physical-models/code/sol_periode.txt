@@ -1,0 +1,6 @@
+Pas trouvé de solution de période 2
+Pas trouvé de solution de période 3
+Pas trouvé de solution de période 4
+Pas trouvé de solution de période 5
+Période inf → b = 0.150 ; classes de périodes = [-193.011 -107.702 -107.528 -107.243 -103.84   -72.934  -50.793  -47.667
+    6.107   62.625   64.484   79.181   92.594   93.941  100.455  105.823]

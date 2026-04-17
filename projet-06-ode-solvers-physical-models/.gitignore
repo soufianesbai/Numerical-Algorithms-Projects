@@ -1,0 +1,11 @@
+__pycache__
+*.pdf
+*.toc
+*.aux
+*.log
+*.out
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.bbl
+*.blg

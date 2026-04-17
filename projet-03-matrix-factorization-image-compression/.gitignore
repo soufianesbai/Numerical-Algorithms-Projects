@@ -1,0 +1,13 @@
+# Ignorer les fichiers compilés Python
+*.pyc
+*.pyo
+__pycache__/
+# Ignorer les fichiers temporaires LaTeX
+*.aux
+*.log
+*.toc
+*.out
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.pdf

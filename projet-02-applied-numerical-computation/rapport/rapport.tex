@@ -1,0 +1,203 @@
+\documentclass{article}
+
+
+\usepackage[utf8]{inputenc}
+\usepackage{minted}
+\usepackage{xcolor} % for custom colors
+
+%%%%%%%%%%%%%%%% Lengths %%%%%%%%%%%%%%%%
+\setlength{\textwidth}{15.5cm}
+\setlength{\evensidemargin}{0.5cm}
+\setlength{\oddsidemargin}{0.5cm}
+\AtBeginEnvironment{minted}{\setlength{\parskip}{-10pt}}
+
+%%%%%%%%%%%%% Minted Settings %%%%%%%%%%%%
+
+% Define light theme background
+\definecolor{bgcolor}{RGB}{250, 250, 250}
+
+\setminted{
+    linenos, % Add line numbers
+    frame=single, % Frame around code
+    bgcolor=bgcolor, % Background color
+    fontsize=\small, % Font size
+    tabsize=4, % Tab size
+    breaklines, % Allow line breaks
+    escapeinside=||, % Escape inside |...|
+}
+\usemintedstyle{vs}
+
+%%%%%%%%%%%%%%%% Variables %%%%%%%%%%%%%%%%
+\def\projet{2}
+\def\titre{Résolution de systèmes linéaires / Application à l’équation de la chaleur }
+\def\groupe{3}
+\def\equipe{25588}
+\def\responsible{Joao Neto De Abreu}
+\def\secretary{Toine Horny}
+\def\others{Soufiane Sbai - Mohammed Belhassen Charbaji}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%% Header %%%%%%%%%%%%%%%%
+\noindent\begin{minipage}{0.98\textwidth}
+  \vskip 0mm
+  \noindent
+  { \begin{tabular}{p{7.5cm}}
+      {\bfseries \sffamily
+        Projet \projet} \\ 
+      {\itshape \titre}
+    \end{tabular}}
+  \hfill 
+  \fbox{\begin{tabular}{l}
+      {~\hfill \bfseries \sffamily Groupe \groupe\ - Equipe \equipe
+        \hfill~} \\[2mm] 
+      Responsable : \responsible \\
+      Secrétaire : \secretary \\
+      Codeurs : \others
+    \end{tabular}}
+  \vskip 4mm ~
+
+  ~~~\parbox{0.95\textwidth}{\small \textit{Résumé~:} \sffamily
+Le but de ce projet consiste à implémenter des algorithmes de résolution de systèmes linéaires de grande taille, et à les appliquer à un problème de résolution d’équation aux dérivées partielles. Dans ce projet, on considère uniquement des systèmes linéaires symétriques, définis positifs et creux (ne comportant que relativement peu d’éléments non nuls), et on exploite ces trois propriétés pour obtenir des algorithmes plus efficaces. }
+  \vskip 1mm ~
+\end{minipage}
+
+%%%%%%%%%%%%%%%% Main part %%%%%%%%%%%%%%%%
+\section*{Librairies}
+On utilisera les librairies numpy et scipy.sparse pour tout ce projet. Elles seront importées de la manière suivante :
+
+\begin{minted}{python}
+import numpy as np
+from scipy.sparse import random as sparse_random
+\end{minted}
+\section*{Décomposition de Cholesky}
+\subsection*{Factorisation Complète}
+L'algorithme de décomposition dense de Cholesky consiste à calculer une matrice triangulaire inférieure T à partir de A, une matrice symétrique définie positive.
+On doit décomposer A telle que :
+\[ A = T.T^{T}, \quad t_{i,i}^{2} = a_{i,i} - \sum_{k=1}^{i-1} t_{i,k}^{2}, \quad \forall j \ge i,t_{j,i} = \frac{a_{i,j} -\sum_{k=1}^{i-1}t_{i,k}t{j,k}}{t_{i,i}} \]
+
+La complexité de l'algorithme est en \(O(n^{3})\) avec n le nombre de ligne (ou de colonnes) de A. Puisque pour chaque coefficient inférieur de T, on doit calculer une somme de coefficients qui, dans le pire des cas, parcourt n-1 termes.
+Ainsi, pour la résolution d'un système linéaire \(A.x = b\), on a:
+\begin{itemize}
+    \item \(O(n^{3})\) pour la décomposition de Cholesky
+    \item \(O(n^{2})\) pour la résolution de \((T.T).x = y ; T.y = b\)
+\end{itemize}
+La résolution s'effectue donc en \(O(n^{3})\).
+\subsection*{Factorisation incomplète}
+
+\begin{minted}{python}
+    def cholesky_incomplete(A):
+        '''
+        Paramètres : A : Matrice symétrique définie positive
+        Return : T : Matrice qui vérifie la décomposition de Cholesky incomplet
+        '''
+        n = A.shape[0]
+        T = np.zeros(np.shape(A))
+    
+        for i in range(n):
+            if not(A[i,i]):
+                continue
+            #Calcul des coefficients diagonaux non nuls
+            T[i, i] = np.sqrt(A[i, i] - np.sum(T[i, :i] ** 2))
+            
+            for j in range(i + 1, n):
+                if not(A[j,i]):
+                    continue
+                #Calcul des coefficents inférieurs non nuls
+                T[j, i] = (A[j, i] - np.sum(T[i, :i] * T[j, :i])) / T[i, i]
+        return T
+    \end{minted}
+
+\begin{enumerate}
+    \item L'algorithme de Cholesky incomplet consiste à laisser $t_{i,j}$ = 0 si $a_{i,j}$ = 0. Le principe de Cholesky incomplet est le même que le dense, il suffit de rajouter un cas où le coefficient de A est nul.
+    \item Pour les tests, on utilise une fonction qui génère une matrice creuse à l'aide de \emph{sparse\_random(n,m,density)} puis pour obtenir une matrice symétrique déffinie positive, on lui ajoute sa transposée et l'identité. On teste cet algorithme en lui donnant une matrice creuse créée par la fonction précédente puis on vérifie que la sortie a bien la moitié de la densité de l'entrée.
+    \item La complexité de cet algorithme est en \(O(kn^2)\) où k = cond(A). Dans le cas des matrices creuses \(k \ll n\) donc l'algorithme est beaucoup plus efficace dans ce cas.
+    \item On souhaite vérifier si la matrice T trouvée par l'algorithme de Cholesky (complet ou incomplet) est un bon préconditionneur ou non.
+\end{enumerate}
+
+\section*{Méthode du gradient conjugué}
+\begin{figure}[h]
+    \centering
+    \begin{minted}{python}
+    def preconditioned_conjugate_gradient(A, B, X, eps, Nmax):
+        '''
+        Paramètres :
+            A (numpy.ndarray) : Matrice symétrique définie positive.
+            B (numpy.ndarray) : Vecteur second membre.
+            X (numpy.ndarray) : Estimation initiale de la solution.
+            eps (float) : Tolérance de convergence.
+            Nmax (int) : Nombre maximal d'itérations.
+        
+        Sortie :
+            numpy.ndarray : Solution approchée du système A.X = B.
+        '''
+        R = B - A @ X
+        k = 0
+        rsold = R.T @ R
+        L = partie1.incomplete_cholesky(A)
+        while ((LA.norm(R, np.inf) / LA.norm(B, np.inf)) > eps) and (k <= Nmax):
+            Y = solve_triangular(L, R, lower=True)
+            Z = solve_triangular(L.T, Y, lower=False)
+            rsnew = R.T @ Z
+            if k == 0:
+                P = R
+            else:
+                gamma = rsnew / rsold
+                P = R + gamma * P
+            AP = A @ P
+            alpha = rsnew / (P.T @ AP)
+            X = X + alpha * P
+            R = R - alpha * AP
+            rsold = rsnew
+        return X
+    \end{minted}
+    \label{fig:conjgrad}
+\end{figure}
+
+\begin{enumerate}
+    \item Le premier problème est la division par p.T * Ap. Si Ap est mal conditionné, on aura une division par 0.Le deuxième de problème est l'absence de vérification des hypothèses sur A.
+    \item Le gradient conjugé ne fait pas de produit matrice-matrice à l'image de la décomposition de Cholesky complète ou incomplète, d'où la complexité s'améliore passant de O(n3) à O(n2). Pour plus de rigueur la compléxité du Gradient conjugué est O($kn^2$) où k est le conditionnement de A. Mais cela conserve la complexité quadratique de la méthode.
+\end{enumerate}
+
+\newpage
+\section*{Application à l'équation de la chaleur}
+
+\begin{figure}[h]
+    \centering
+    \begin{minted}{python}
+    def solve_heat_equation(F, N):
+        '''
+        Paramètres :
+            F (numpy.ndarray) : Terme second membre représentant les sources de chaleur.
+            N (int) : Nombre de points intérieurs sur un axe.
+        
+        Sortie :
+            numpy.ndarray : Champ de température calculé.
+        '''
+        # Grid spacing
+        h = 1 / (N + 1)
+
+        # Laplacian matrix
+        A = laplacian(N, h)
+
+        T = np.zeros(N * N)
+
+        # Solve the linear system using the conjugate gradient method
+        T = partie2.conjgrad(A, F, T)
+
+        # Reshape the solution
+        T = T.reshape((N, N))
+        return T
+    \end{minted}
+    \label{fig:eqChaleur}
+\end{figure}
+
+Pour résoudre l'équation $\Delta T + f = 0$ on doit:
+
+\begin{enumerate}
+    \item Calculer la matrice A qui remplace l'opérateur laplacien.
+    \item Redimensionner T et f pour obtenir des vecteurs de taille $N^2$.
+    \item Résoudre l'équation A$\bar{T}$ = $\bar{F}$ à l'aide de la partie 2
+\end{enumerate}
+
+\end{document}

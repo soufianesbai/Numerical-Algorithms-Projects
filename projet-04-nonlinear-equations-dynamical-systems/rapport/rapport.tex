@@ -1,0 +1,87 @@
+\documentclass{article}
+
+
+
+\usepackage[numbers]{natbib}
+\usepackage[french]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{graphicx}  
+\usepackage{float}     
+\usepackage{caption}   
+\usepackage{subcaption} 
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    pdfborder={0 0 0} 
+}
+
+\newcommand{\nbR}{\ensuremath{\mathrm{I\!R}}} % IR
+
+%%%%%%%%%%%%%%%% Lengths %%%%%%%%%%%%%%%%
+\setlength{\textwidth}{15.5cm}
+\setlength{\evensidemargin}{0.5cm}
+\setlength{\oddsidemargin}{0.5cm}
+
+%%%%%%%%%%%%%%%% Variables %%%%%%%%%%%%%%%%
+\def\projet{4}
+\def\titre{Equations non linéiares et Méthode de Newton-Raphson}
+\def\groupe{3}
+\def\equipe{4}
+\def\responsible{Mohamed Belhassen Charbaji}
+\def\secretary{Eve Turchet}
+\def\others{Soufiane Sbai,\\ Pierre-Louis Shrestha--Salié}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%% Header %%%%%%%%%%%%%%%%
+\noindent\begin{minipage}{0.98\textwidth}
+  \vskip 0mm
+  \noindent
+  { \begin{tabular}{p{7.5cm}}
+      {\bfseries \sffamily
+        Projet \projet} \\
+      {\itshape \titre}
+    \end{tabular}}
+  \hfill
+  \fbox{\begin{tabular}{l}
+      {~\hfill \bfseries \sffamily Groupe \groupe\ - Equipe \equipe
+        \hfill~} \\[2mm]
+      Responsable : \responsible \\
+      Secrétaire : \secretary \\
+      Codeurs : \others
+    \end{tabular}}
+  \vskip 4mm ~
+
+  ~~~\parbox{0.95\textwidth}{\small \textit{Résumé~:} \sffamily Ce projet s'intéresse aux algorithmes de recherche de racines d'un système d'équations non linéaires. Nous allons ici considérer la méthode de résolution de Newton-Raphson et son application dans une série de cas concrets.
+}
+  \vskip 1mm ~
+\end{minipage}
+
+%%%%%%%%%%%%%%%% Main part %%%%%%%%%%%%%%%%
+\tableofcontents
+
+\section{Méthode de Newton-Raphson}
+\input{newton_raphson.tex}
+
+\section{Méthode de Braistow}
+\input{bairstow.tex}
+
+
+\section{Points de Lagrange}
+\input{lagrandian_points.tex}
+
+\section{Conclusion}
+\input{conclusion.tex}
+
+
+\bibliographystyle{plainnat}
+
+\begin{flushleft}
+  \bibliography{references}
+\end{flushleft}
+
+\end{document}

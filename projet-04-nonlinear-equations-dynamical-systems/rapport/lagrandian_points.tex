@@ -1,0 +1,32 @@
+Nous allons voir une application de la méthode de Newton-Raphson dans le cadre des points de Lagrange.
+\subsection{Définition }
+Les points de Lagrange sont des points dans un système à trois corps,où le troisième corps de masse négligeable se trouve à un point d'équilibre.\\
+Les forces gravitationnelles et centrifuge s'exerçant sur ce corps se compensent. Permettant à ce corps de rester stable par rapport aux deux autres.\\
+Soit : 
+\begin{itemize}
+  \item $F_c$, la force centrifuge s'appliquant sur le corps
+  \item $F_{g1}$, la force gravitationnelle exercée par le premier corps massif
+  \item $F_{g2}$, la force gravitationnelle exercée par le deuxième corps massif
+\end{itemize}
+Les points de Lagrange correspondent donc, dans un référentiel $\nbR^2$, aux points $(x,y) \in \nbR^2$ tels que :
+\[
+ (F_c + F_{g1} + F_{g2})(x,y) = 0
+\]
+%TODO s'il reste de la place on peut expliciter la formule des forces 
+\subsection{Calcul numérique des points de Lagrange}
+A partir des formules décrivant les points de Lagrange \cite{lagrandian_points_formule},  nous pouvons définir les points {L1, L2} et {L3}, dans un référentiel $\nbR^2$ comme les points d'ordonnée nulle et d'abscisse correspondant aux racines réelles des polynômes suivant :\\
+\begin{align*}
+\textbf{L1:} \quad & x^5 + (\mu - 3)x^4 + (3 - 2\mu)x^3 - \mu x^2 + 2\mu x - \mu = 0 \\
+\textbf{L2:} \quad & x^5 + (3 - \mu)x^4 + (3 - 2\mu)x^3 - \mu x^2 - 2\mu x - \mu = 0 \\
+\textbf{L3:} \quad & x^5 + (7\mu - 3)x^4 + (3 - 3\mu)x^3 + (9\mu - 8\mu^2 - 3)x^2 \\
+                  & \quad + (14\mu^2 - 12\mu + 3)x - 7\mu^2 + 6\mu - 1 = 0
+\end{align*}
+
+Avec :
+\begin{itemize}
+  \item{$\mu$, le ratio de masse des deux corps massifs}
+  \item{$x$, la normalisation de la distance entre le point de Lagrange et le premier corps massif}
+\end{itemize}
+Les racines de ces polynômes peuvent être calculées numériquement en utilisant la méthode de Bairstow.
+Les points {L4} et {L5} quant à eux, peuvent être obtenus par construction géométrique.
+

@@ -1,0 +1,87 @@
+\documentclass{article}
+
+\usepackage[french]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{natbib}
+\usepackage{hyperref}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    pdfborder={0 0 0} 
+}
+
+%%%%%%%%%%%%%%%% Lengths %%%%%%%%%%%%%%%%
+\setlength{\textwidth}{15.5cm}
+\setlength{\evensidemargin}{0.5cm}
+\setlength{\oddsidemargin}{0.5cm}
+
+%%%%%%%%%%%%%%%% Variables %%%%%%%%%%%%%%%%
+\newcommand\projet{6}
+\newcommand\titre{Résolution approchée d'équations différentielles / Modélisation de systèmes dynamiques}
+\newcommand\groupe{3}
+\newcommand\equipe{3}
+\newcommand\responsible{Joao Pedro Neto De Abreu}
+\newcommand\secretary{Pierre-Louis Shrestha--Salie }
+\newcommand\others{Soufiane SBAI \\ Eve Turchet}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%% Header %%%%%%%%%%%%%%%%
+\noindent\begin{minipage}{0.98\textwidth}
+  \vskip 0mm
+  \noindent
+  { \begin{tabular}{p{7.5cm}}
+      {\bfseries \sffamily
+        Projet \projet} \\ 
+      {\itshape \titre}
+    \end{tabular}}
+  \hfill 
+  \fbox{\begin{tabular}{l}
+      {~\hfill \bfseries \sffamily Groupe \groupe\ - Equipe \equipe
+        \hfill~} \\[2mm] 
+      Responsable : \responsible \\
+      Secrétaire : \secretary \\
+      Codeurs : \others
+    \end{tabular}}
+  \vskip 4mm ~
+\parbox{0.95\textwidth}{\small \textit{Résumé~:} \sffamily 
+  Ce projet s'intéresse aux méthodes de résolution d'équations différentielles ainsi qu'à un certain nombre 
+  d'applications possibles, notamment la modélisation de systèmes dynamiques. Nous étudierons la modélisation de 
+  populations dite de Lotka-Volterra ainsi que la modélisation de système de réactions chimiques oscillantes.
+  }
+  \vskip 1mm ~
+  
+
+\end{minipage}
+
+%%%%%%%%%%%%%%%% Main part %%%%%%%%%%%%%%%%
+
+\tableofcontents
+
+\newpage 
+
+\input{resolution_eq_diff.tex}
+
+\newpage 
+\input{lotka_volterra.tex}
+
+\cite{TODOREMOVEJKj}
+
+\input{reactions_chimiques.tex}
+
+\input{pendulum.tex}
+
+\bibliographystyle{plainnat}
+
+\begin{flushleft}
+  \bibliography{references}
+\end{flushleft}
+
+\end{document}

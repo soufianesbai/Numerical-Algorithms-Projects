@@ -1,0 +1,17 @@
+# Ignorer tout par défaut
+*
+
+# Ne pas ignorer les fichiers .tex et .py
+!*.tex
+!*.py
+!*.gitignore
+
+# Ne pas ignorer les dossiers (nécessaire pour suivre les fichiers .tex et .py à l'intérieur)
+!*/
+
+# Facultatif : ignorer les fichiers de sauvegarde temporaires
+*.pyc
+__pycache__/
+*.log
+*.aux
+*.out
